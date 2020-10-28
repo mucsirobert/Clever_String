@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1603456779 source:d:\egyetem\7.félév\cpp11\nhf\nhf\main.cpp
+	<iostream>
+	"mystring.h"
+
+1603456813 d:\egyetem\7.félév\cpp11\nhf\nhf\mystring.h
+	<iostream>
+
+1603456802 source:d:\egyetem\7.félév\cpp11\nhf\nhf\mystring.cpp
+	"mystring.h"
+	<iostream>
+	<cstring>
+
+1603896709 source:d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.cpp
+	"mystring.h"
+	<iostream>
+	<cstring>
+
+1603895897 d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.h
+	<iostream>
+
+1603896793 source:d:\egyetem\7.felev\cpp11\nhf\nhf\main.cpp
+	<iostream>
+	"mystring.h"
+
