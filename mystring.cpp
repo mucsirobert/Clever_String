@@ -89,10 +89,10 @@ MyString& MyString::operator+= (const MyString rhs){
     this->refcnt = new int{1};
     return *this;
 }
-
 MyString& MyString::operator+= (const char rhs){
     char* new_str = new char[strlen(str)+2];
     strcpy(new_str, this->getStr());
+//    strncat(new_str, rhs, 1);
     new_str[this->getLength()] = rhs;
     new_str[this->getLength()+1] = '\0';
     destruct();
@@ -100,22 +100,22 @@ MyString& MyString::operator+= (const char rhs){
     this->refcnt = new int {1};
     return *this;
 };
-
+/*
 std::ostream& operator<<(std::ostream& os, MyString& ms){
     os << ms.getStr();
     return os;
-}
+}*/
 
 std::ostream& operator<<(std::ostream& os, MyString const& ms){
-    os << ms.getStr();
+    os << ms.str;
     return os;
 }
 
 std::istream& operator>>(std::istream& is, MyString &ms){
     int th = 0;
     char c;
-    char *input = new char[11];
     int allocated = 11;
+    char *input = new char[allocated];
     while( is.get(c) ){
         if( '\n' == c  ||  '\r' == c )
             break;
@@ -125,7 +125,8 @@ std::istream& operator>>(std::istream& is, MyString &ms){
             allocated *= 2;
             char *new_place = new char[allocated];
             strcpy(new_place,input);
-            delete[]new_place;
+            delete[]input;
+            input = new_place;
         }
         ++th;
     }
@@ -139,12 +140,12 @@ int MyString::getCount() const noexcept {return *refcnt;}
 
 int MyString::getLength() const noexcept {return strlen(str);}
 
-char& MyString::operator[](int i){
-    if(i >= this->getLength() || i < 0){
+char& MyString::operator[](size_t i){
+    if(i >= strlen(str) || i < 0){
         throw std::out_of_range("Index out of bound");
     }
     if(1 < *this->refcnt){
-        char *toCopyOnWrite = new char[strlen(this->str)];
+        char *toCopyOnWrite = new char[strlen(this->str)+1];
         strcpy(toCopyOnWrite, this->str);
         -- *this->refcnt;
         this->str = toCopyOnWrite;
@@ -153,10 +154,15 @@ char& MyString::operator[](int i){
     return str[i];
 }
 
-char const& MyString::operator[] (int i) const {
-    if(i >= this->getLength() || i < 0){
+char const& MyString::operator[] (size_t i) const {
+    if(i >= strlen(str) || i < 0){
         throw std::out_of_range("Index out of bound");
     }
     return str[i];
 }
 
+
+/*std::ostream& operator<<(std::ostream& os, const MyString& ms){
+    os << ms.getStr();
+    return os;
+}*/

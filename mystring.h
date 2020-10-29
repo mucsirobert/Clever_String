@@ -13,13 +13,14 @@ public:
     MyString& operator= (MyString const &rhs);
     MyString& operator+= (MyString rhs);
     MyString& operator+= (char rhs);
-    char& operator[](int i);
-    char const& operator[](int i) const ;
+    char& operator[](size_t i);
+    char const& operator[](size_t i) const ;
     char& operator= (char rhs) const;
     int getLength() const noexcept;
     int getCount() const noexcept;
     char* getStr() const {return str;}
     friend std::istream& operator>>(std::istream& is, MyString &ms);
+    friend std::ostream& operator<<(std::ostream& os, MyString const& ms);
 private:
     char* str{nullptr};
     int* refcnt{nullptr};
@@ -30,7 +31,8 @@ MyString operator+ (MyString lhs, const MyString& rhs);
 
 MyString operator+ (MyString lhs, const char rhs);
 
-std::ostream& operator<<(std::ostream& os, MyString& ms);
-std::ostream& operator<<(std::ostream& os, MyString const& ms);
+//std::ostream& operator<<(std::ostream& os, MyString& ms);
+//std::ostream& operator<<(std::ostream& os, MyString const& ms);
+//std::ostream& operator<<(std::ostream& os, const MyString& ms);
 
 #endif // MYSTRING_H_INCLUDED
