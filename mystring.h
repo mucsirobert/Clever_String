@@ -26,15 +26,15 @@ public:
     char* getStr() const {return str;}
     friend std::istream& operator>>(std::istream& is, MyString &ms);
 private:
-    char* str = nullptr;
-    int* refcnt = 0;
-
-    void set_str(char *c);
+    char* str{nullptr};
+    int* refcnt{nullptr};
+    void destruct();
+    //void set_str(char *c);
 };
 
 
 
-MyString operator+ (MyString lhs, MyString rhs);
+MyString operator+ (MyString lhs, const MyString& rhs);
 
 MyString operator+ (MyString lhs, const char rhs);
 

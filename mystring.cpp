@@ -5,18 +5,13 @@
 //talán jó
 MyString::MyString(const char *c){
 //    std::cout << "str pointer memory address" << &str << std::endl;
-
-
-    str = new char(strlen(c));
-    strcpy(str, c);
-
-    //str = const_cast<char *>(c);
-    if(str){
-        refcnt = new int(1);
-//        std::cout<<&c<< ":  lol  :" <<&str<<std::endl;
+    if (c) {
+        str = new char[strlen(c) + 1];
+        strcpy(str, c);
+        refcnt = new int{1};
     }
-    else
-        refcnt = nullptr;
+
+
 };
 
 //talán jó
@@ -41,8 +36,7 @@ MyString::MyString(MyString && the_other){
     the_other.refcnt = nullptr;
 };
 
-//elvileg jó
-MyString::~MyString(){
+void MyString::destruct(){
     if(str != nullptr){
         -- *refcnt;
         if(*refcnt == 0) {
@@ -52,14 +46,19 @@ MyString::~MyString(){
     }
 }
 
+//elvileg jó
+MyString::~MyString(){
+    destruct();
+}
+
 MyString& MyString::operator= (MyString const &rhs){
     std::cout << "const value giver\n";
     if (this != &rhs) { // self-assignment check expected
-        if(1 == *this->refcnt)
-            delete[] this->str;              // destroy storage in this
-        --*this->refcnt;
-        this->str = nullptr;             // preserve invariants in case next line throws
-        this->refcnt = nullptr;
+        destruct();
+                      // destroy storage in this
+
+                     // preserve invariants in case next line throws
+
         this->str = new char[strlen(rhs.str)]; // create storage in this
         refcnt = rhs.refcnt;
         ++*rhs.refcnt;
@@ -74,7 +73,7 @@ MyString& MyString::operator= (MyString && the_other){
     //std::cout <<"move operator\n";
     if(&the_other != this  ){
            // std::cout <<"a 1 \n";
-        this->~MyString();
+        this->destruct();
         refcnt = the_other.refcnt;
         str = the_other.str;
         the_other.refcnt = nullptr;
@@ -84,29 +83,37 @@ MyString& MyString::operator= (MyString && the_other){
 };
 
 //talán jó
-MyString operator+ (MyString lhs, MyString rhs){
+MyString operator+ (MyString lhs, const MyString& rhs){/*
     char cat[lhs.getLength() + rhs.getLength()+1];
     strcpy(cat,lhs.getStr());
     strcat(cat,rhs.getStr());
-    cat[lhs.getLength() + rhs.getLength()] = '\0';
-    MyString my{cat};
+    cat[lhs.getLength() + rhs.getLength()] = '\0';*/
+//    MyString my{cat};
     //std::cout << "+ operator new length: " << cat << " " << my.getLength();
-
-    return MyString{cat};
+    return lhs += rhs;
 };
 
 MyString operator+ (MyString lhs, const char rhs){
-    char cat[lhs.getLength()+2];
+    /*char cat[lhs.getLength()+2];
     strcpy(cat,lhs.getStr());
     cat[lhs.getLength()] = rhs;
-    cat[lhs.getLength()+1] = '\0';
-    return MyString{cat};
+    cat[lhs.getLength()+1] = '\0';*/
+    return lhs += rhs;
 }
 
-MyString& MyString::operator+= (MyString rhs){
+MyString& MyString::operator+= (const MyString rhs){
     if(rhs.getLength() == 0){
         return *this;
     }
+        char *new_str = new char(strlen(str)+rhs.getLength()+1);
+        strcpy(new_str, this->getStr());
+        strcat(new_str, rhs.getStr());
+        new_str[strlen(str)+rhs.getLength()] = '\0';
+        destruct();
+        this->str = new_str;
+        this->refcnt = new int{1};
+
+    /*
     if (1 < this->getCount()){
         char *new_str = new char(strlen(str)+rhs.getLength()+1);
         strcpy(new_str, this->getStr());
@@ -124,11 +131,18 @@ MyString& MyString::operator+= (MyString rhs){
         new_str[strlen(str)+rhs.getLength()] = '\0';
         delete[] str;
         this->str = new_str;
-    }
+    }*/
     return *this;
 }
 
-MyString& MyString::operator+= (char rhs){
+MyString& MyString::operator+= (const char rhs){
+    char* new_str = new char(strlen(str)+2);
+    strcpy(new_str, this->getStr());
+    new_str[this->getLength()] = rhs;
+    new_str[this->getLength()+1] = '\0';
+    destruct();
+    this->str = new_str;
+    this->refcnt = new int {1};/*
     if(1 <this->getCount()){
         char* new_str = new char(strlen(str)+2);
             strcpy(new_str, this->getStr());
@@ -145,7 +159,7 @@ MyString& MyString::operator+= (char rhs){
         new_str[this->getLength()+1] = '\0';
         delete[] str;
         this->str = new_str;
-    }
+    }*/
     return *this;
 };
 
@@ -161,16 +175,17 @@ std::ostream& operator<<(std::ostream& os, MyString const& ms){
     os << ms.getStr();
     return os;
 }
-
+/*
 void MyString::set_str(char *c){
-        str = new char(strlen(c));
+        this->destruct();
+        str = new char(strlen(c)+1);
         strcpy(str, c);
         if(str){
             refcnt = new int(1);
         }
         else
             refcnt = nullptr;
-    }
+    }*/
 
 std::istream& operator>>(std::istream& is, MyString &ms){
     /*char *c;
@@ -189,11 +204,12 @@ std::istream& operator>>(std::istream& is, MyString &ms){
 
         a[n] = c;
 
-        if ( n == allocated ){
+        if ( n >= allocated-1 ){
             allocated *= 2;
             char *b = new char[allocated];
-            for ( int i = 0; i <= n; ++i )
-                b[i] = a[i];
+//            for ( int i = 0; i <= n; ++i )
+//                b[i] = a[i];
+            strcpy(b,a);
             delete[] a;
             a = b;
         }
@@ -202,7 +218,9 @@ std::istream& operator>>(std::istream& is, MyString &ms){
     }
     a[n] = '\0';
 
-    ms.set_str(a);
+    ms = MyString{a};
+    delete[] a;
+//    ms.set_str(a);
 
     return is;
 }
@@ -218,7 +236,7 @@ char& MyString::operator[](int i){
         throw std::out_of_range("Index out of bound");
     }
     if(1 < *this->refcnt){
-        std::cout <<"inside: copyOnWriteCall\n";
+        //std::cout <<"inside: copyOnWriteCall\n";
         char *toCopyOnWrite = new char(strlen(this->str));
 
         strcpy(toCopyOnWrite, this->str);
@@ -228,13 +246,12 @@ char& MyString::operator[](int i){
         this->refcnt = new int(1);
     }
 
-        std::cout <<"copyOnWriteCall\n";
+        //std::cout <<"copyOnWriteCall\n";
 //        std::cout << "nope:\n";
     return str[i];
 }
 
 char const& MyString::operator[] (int i) const {
-    std::cout << "const:\n";
     return str[i];
 }
 
