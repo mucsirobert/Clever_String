@@ -11,15 +11,19 @@
 	<iostream>
 	<cstring>
 
-1603975408 source:d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.cpp
+1604079587 source:d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.cpp
 	"mystring.h"
 	<iostream>
 	<cstring>
 
-1603975423 d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.h
+1604079603 d:\egyetem\7.felev\cpp11\nhf\nhf\mystring.h
 	<iostream>
 
-1603972368 source:d:\egyetem\7.felev\cpp11\nhf\nhf\main.cpp
+1603976687 source:d:\egyetem\7.felev\cpp11\nhf\nhf\main.cpp
+	<iostream>
+	"mystring.h"
+
+1603976687 source:d:\egyetem\7.felev\cpp11\nhf\nhf\test.cpp
 	<iostream>
 	"mystring.h"
 

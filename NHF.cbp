@@ -32,7 +32,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="test.cpp" />
 		<Unit filename="mystring" />
 		<Unit filename="mystring.cpp" />
 		<Unit filename="mystring.h" />

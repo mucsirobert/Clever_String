@@ -24,15 +24,12 @@ public:
 private:
     char* str{nullptr};
     int* refcnt{nullptr};
+    size_t len = 0;
     void destruct() noexcept;
 };
 
 MyString operator+ (MyString lhs, const MyString& rhs);
 
 MyString operator+ (MyString lhs, const char rhs);
-
-//std::ostream& operator<<(std::ostream& os, MyString& ms);
-//std::ostream& operator<<(std::ostream& os, MyString const& ms);
-//std::ostream& operator<<(std::ostream& os, const MyString& ms);
 
 #endif // MYSTRING_H_INCLUDED
